@@ -14,3 +14,4 @@ Better description in search results
 Presentable parameter names
 Descriptions for parameters and search functions
 Does not support extendiod period searches, I'll probably add a checkbox for this
+SVG graph rendering
