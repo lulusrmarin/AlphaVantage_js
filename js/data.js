@@ -1,5 +1,5 @@
 // API Data
-var api_key = 1953;
+var api_key = 'demo';
 var api_data = {};
 var options = {};
 var inputs = {};
