@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Alpha Vantage Search</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+</head>
+<body>
+	<div ng-app="stockSearch" ng-controller="stockCtrl" style="padding: 16px;">
+        <div id="controls">
+            <input type="text" placeholder="Symbol" ng-model="symbol">
+            <br>
+            <select ng-model="func" ng-options="option.value as option.name for option in function_data" ng-change="loadOptions()"></select>
+        </div>
+        <div ng-repeat="(name, option) in options">
+            <select ng-model="opts[ name ]" ng-options="option.value as option.name for option in option"></select><br>
+        </div>
+        <div ng-repeat="(name, option) in inputs">
+            <input type="text" ng-model="inpts[ name ]" ng-attr-placeholder="{{name}}"><br>
+        </div>
+        <i class="fa fa-refresh" aria-hidden="true" ng-click="change()" style="cursor: pointer;"></i>
+        <br><br>
+	    <table class="w3-table-all w3-tiny w3-striped">
+            <thead>
+                <tr>
+                    <th ng-attr-colspan="{{colspan}}" class="w3-green">
+                        <span ng-if="symbol">Results for: {{symbol.toUpperCase()}}</span>
+                        <span ng-if="symbol && func"> - </span>
+                        <span ng-if="func">Using Series: {{func}}</span>
+                        <span ng-if="func && intrvl"> - </span>
+                        <span ng-if="intrvl">Interval: {{intrvl}}</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th ng-show="data" class="w3-blue w3-border-right">Date</th>
+                    <th class="w3-blue w3-border-right" ng-repeat="(key, value) in firstRow">{{key}}</th>
+                </tr>
+            </thead>
+            <tbody ng-repeat="(key, value) in data">
+                <tr class="w3-hover-gray">
+                    <td class="w3-border-right">{{key}}</td>
+                    <td class="w3-border-right" ng-repeat="(key2, value2) in firstRow">{{value[key2]}}</td>
+                </tr>
+            </tbody>
+	    </table>
+	</div>
+</body>
+<script src="js/data.js"></script>
+<script>
+    // Declare our overall app
+    var app = angular.module('stockSearch', []);
+
+    // Where the magic happens
+    app.controller( 'stockCtrl', function( $scope, $http ) {
+        // Seed the functions dropdown
+        $scope.function_data = api_data['functions'];
+        // Set function default
+        $scope.func = $scope.function_data[0].value;
+		$scope.inpts = {};
+		$scope.opts = {};
+		
+        // Setup controls
+        $scope.loadOptions = function() {
+            $scope[ 'options' ] = {};
+            $scope[ 'inputs' ] = {};
+			
+			$scope.inpts = {};
+			$scope.opts = {};	
+			
+            for ( key in options )
+                for( key2 in options[key] )
+                    if ( key2 == $scope.func )
+                        $scope[ 'options' ][ key ] = options[ key ][ key2 ];
+
+            for ( key in inputs )
+                if ( inputs[ key ].includes( $scope.func ) )
+                    $scope[ 'inputs' ][ key ] = true;	
+        };
+
+        // Declare the change function for use in the scope
+        $scope.change = function() {
+            $scope.firstRow = null;
+
+            url = base_url
+                + '?function=' + $scope.func + '&symbol=' + $scope.symbol + '&apikey=' + api_key;
+			for( option in $scope.opts )
+				url += '&' + option + '=' + $scope.opts[ option ];
+			for( input in $scope.inpts )
+				url += '&' + input + '=' + $scope.inpts[ input ];
+
+			//console.log( url );
+				
+            // An AJAX request to a constructed API URL
+	        $http.get( url )
+            .then( function( response ) {
+                if( response.data ) {
+                    idx = Object.keys(response.data)[1];
+                    $scope.data = response.data[ idx ];
+                }
+
+                if( $scope.data ) {
+                    row1 = Object.keys($scope.data)[0];
+                    $scope.firstRow = $scope.data[ row1 ];
+                    $scope.colspan = row1.length;
+                }
+            },
+            // What to do during an error
+            function( response ) {
+                console.log( response );
+            });
+	    }
+    });
+
+</script>
+</html>
