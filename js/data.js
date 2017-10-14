@@ -92,7 +92,7 @@ options['interval']['TIME_SERIES_INTRADAY'] = [
 
 options['interval']['SMA'] = options['interval']['EMA'] = options['interval']['WMA'] = options['interval']['DEMA'] = options['interval']['TEMA'] =
 options['interval']['TRIMA'] = options['interval']['KAMA'] = options['interval']['MAMA'] = options['interval']['T3'] =
-options['interval']['MACD'] = options['interval']['MACDEXT'] = options['interval']['STOCH'] = options['interval']['STOCHF']
+options['interval']['MACD'] = options['interval']['MACDEXT'] = options['interval']['STOCH'] = options['interval']['STOCHF'] =
 options['interval']['RSI'] = options['interval']['STOCHRSI'] = options['interval']['WILLR'] = options['interval']['ADX'] =
 options['interval']['ADXR'] = options['interval']['APO'] = options['interval']['PPO'] = options['interval']['MOM'] =
 options['interval']['BOP'] = options['interval']['CCI'] = options['interval']['CMO'] = options['interval']['ROC'] =
